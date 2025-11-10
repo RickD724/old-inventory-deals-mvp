@@ -1,46 +1,52 @@
-import React from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { AppProvider } from './context/AppContext'
+import { Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar.jsx";
+import Footer from "./components/Footer.jsx";
+import Home from "./pages/Home.jsx";
+import Browse from "./pages/Browse.jsx";
+import ListingDetail from "./pages/ListingDetail.jsx";
+import DealerSignup from "./pages/DealerSignup.jsx";
+import DealerDashboard from "./pages/DealerDashboard.jsx";
+import AdminPanel from "./pages/AdminPanel.jsx";
+import Pricing from "./pages/Pricing.jsx";
+import Terms from "./pages/Terms.jsx";
+import Privacy from "./pages/Privacy.jsx";
+import { AuthProvider } from "./context/AuthContext.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
-// Layout
-import Header from './components/Header'
-import Footer from './components/Footer'
-
-// Pages
-import HomePage from './pages/HomePage'
-import BrowseDeals from './pages/BrowseDeals'
-import DealDetails from './pages/DealDetails'
-import DealerSignUp from './pages/DealerSignUp'
-import DealerDashboard from './pages/DealerDashboard'
-import BuyerSignUp from './pages/BuyerSignUp'
-import AboutPage from './pages/AboutPage'
-import HowItWorks from './pages/HowItWorks'
-import PricingPage from './pages/PricingPage'
-
-function App() {
+export default function App() {
   return (
-    <AppProvider>
-      <Router>
-        <div className="flex flex-col min-h-screen bg-gray-50">
-          <Header />
-          <main className="flex-grow">
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/browse" element={<BrowseDeals />} />
-              <Route path="/deal/:id" element={<DealDetails />} />
-              <Route path="/dealer/signup" element={<DealerSignUp />} />
-              <Route path="/dealer/dashboard" element={<DealerDashboard />} />
-              <Route path="/buyer/signup" element={<BuyerSignUp />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/how-it-works" element={<HowItWorks />} />
-              <Route path="/pricing" element={<PricingPage />} />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
-      </Router>
-    </AppProvider>
-  )
+    <AuthProvider>
+      <div className="min-h-screen flex flex-col bg-[#0b0f1a] text-zinc-100">
+        <Navbar />
+        <main className="flex-1 container mx-auto px-4 py-6">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/browse" element={<Browse />} />
+            <Route path="/listing/:id" element={<ListingDetail />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/dealer/signup" element={<DealerSignup />} />
+            <Route
+              path="/dealer/listings"
+              element={
+                <ProtectedRoute role="dealer">
+                  <DealerDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute role="admin">
+                  <AdminPanel />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </AuthProvider>
+  );
 }
-
-export default App
